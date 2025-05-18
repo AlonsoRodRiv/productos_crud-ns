@@ -26,12 +26,14 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-Este proyecto es un CRUD completo desarrollado con NestJS, utilizando SQLite como base de datos. Implementa autenticación con JWT y gestión de productos, categorías y proveedores.
+Este proyecto es un CRUD completo desarrollado con NestJS, utilizando SQLite para desarrollo y MySQL para producción. Implementa autenticación con JWT y gestión de productos, categorías y proveedores.
 
 ### Características Técnicas
 
 - **Framework**: NestJS (Node.js + TypeScript)
-- **Base de datos**: SQLite
+- **Base de datos**:
+  - Desarrollo: SQLite
+  - Producción: MySQL
 - **Autenticación**: JWT (JSON Web Tokens)
 - **Arquitectura**: Modular siguiendo los principios SOLID
 - **Validación**: Class-validator para DTOs
@@ -62,12 +64,14 @@ src/
 │
 ├── config/                    # Configuración de la aplicación
 │   ├── config.module.ts       # Módulo de configuración
-│   ├── database-config.service.ts # Servicio de configuración de base de datos
-│   └── env/                   # Variables de entorno
+│   ├── database-config.service.ts # Servicio de configuración de base de datos (SQLite/MySQL)
+│   └── env/                   # Variables de entorno para diferentes ambientes
+│       ├── development.env    # Configuración para entorno de desarrollo (SQLite)
+│       └── production.env     # Configuración para entorno de producción (MySQL)
 │
 ├── database/                  # Configuración de la base de datos
 │   ├── database.module.ts     # Módulo de base de datos
-│   ├── database.providers.ts  # Proveedores de base de datos
+│   ├── database.providers.ts  # Proveedores de base de datos (SQLite/MySQL)
 │   └── init.ts               # Inicialización de la base de datos
 │
 ├── products/                  # Módulo de productos
@@ -139,18 +143,41 @@ El proyecto incluye:
 $ npm install
 ```
 
+### Configuración de Base de Datos
+
+El proyecto está configurado para usar:
+
+- **SQLite** en entorno de desarrollo (configuración predeterminada)
+- **MySQL** en entorno de producción
+
+La configuración de conexión a la base de datos se gestiona a través de archivos de entorno ubicados en `src/config/env/`. El sistema detecta automáticamente el entorno y utiliza la configuración adecuada.
+
+Para configurar la conexión a MySQL, edite o cree el archivo de entorno correspondiente en la carpeta `src/config/env/`:
+
+```
+# src/config/env/production.env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=password
+DB_DATABASE=productos_db
+DB_SYNC=true
+```
+
 ## Running the app
 
 ```bash
-# development
+# development (usando SQLite)
 $ npm run start
 
-# watch mode
+# watch mode (usando SQLite)
 $ npm run start:dev
 
-# production mode
+# production mode (usando MySQL)
 $ npm run start:prod
 ```
+
+El modo de ejecución determina qué archivo de configuración de entorno se utilizará, lo que a su vez determina qué base de datos (SQLite o MySQL) se empleará para la aplicación.
 
 ## Testing
 
